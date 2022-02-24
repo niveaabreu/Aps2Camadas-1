@@ -27,9 +27,6 @@ import random
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
 serialName = "COM3"                  # Windows(variacao de)
 
-imageR = "./imgs/image.png"
-imageW = "./imgs/recebida.png"
-
 
 def random_bytes():
     random.seed(time.time())
@@ -40,13 +37,12 @@ def random_bytes():
     out = []
     for byte in lista:
         out.append(byte)
-        out.append(bytes([13*16]))
-
+        out.append(bytes([13*16]))  #Diferencia se é byte ou diferença
+    print(f"Enviando: \n {b''.join(lista)} do tipo {type(b''.join(out))}")
     #start = [0xAA.to_bytes(1, byteorder='big')]
     final=[0xEE.to_bytes(1, byteorder='big')]
-    lista = lista+final
-    l =b''.join(lista) # Mensagem a ser enviada
-    
+    out = out+final
+    l =b''.join(out) # Mensagem a ser enviada
     return l, x
 
 
@@ -58,32 +54,25 @@ def main():
         # Ativa comunicacao. Inicia os threads e a comunicação seiral 
         com1.enable()
 
-        bytes_to_send, size = random_bytes()
-        #Se chegamos até aqui, a comunicação foi aberta com sucesso. Faça um print para informar.
         print("-------------------------")
         print("Comunicação aberta!")
         print("-------------------------")
-        #aqui você deverá gerar os dados a serem transmitidos. 
-        #seus dados a serem transmitidos são uma lista de bytes a serem transmitidos. Gere esta lista com o 
-        #nome de txBuffer. Esla sempre irá armazenar os dados a serem enviados.
+
         
-        #txBuffer = imagem em bytes!
-        #print(f" - {imageR}")
 
         #faça aqui uma conferência do tamanho do seu txBuffer, ou seja, quantos bytes serão enviados.
         inicio_envio = time.time()  #inicio do envio
-        print(f"Enviando: \n {bytes_to_send} do tipo {type(bytes_to_send)}")
+        print("-------------------------")
+        print("Iniciando Transmissão de dados")
+        print("-------------------------")
+        bytes_to_send, size = random_bytes()
+        
         print(f"Tamanho enviado:{size}")
-            
+
         #finalmente vamos transmitir os tados. Para isso usamos a funçao sendData que é um método da camada enlace.
         #faça um print para avisar que a transmissão vai começar.
         #tente entender como o método send funciona!
         #Cuidado! Apenas trasmitimos arrays de bytes! Nao listas!
-          
-        
-        print("-------------------------")
-        print("Iniciando Transmissão de dados")
-        print("-------------------------")
         com1.sendData(np.asarray(bytes_to_send))
        
         # A camada enlace possui uma camada inferior, TX possui um método para conhecermos o status da transmissão

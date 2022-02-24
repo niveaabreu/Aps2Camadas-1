@@ -24,10 +24,8 @@ import sys
 #use uma das 3 opcoes para atribuir à variável a porta usada
 #serialName = "/dev/tty"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM4"                  # Windows(variacao de)
+serialName = "COM5"                  # Windows(variacao de)
 
-imageR = "./imgs/image.png"
-imageW = "./imgs/recebida.png"
 
 def main():
     try:
@@ -39,7 +37,9 @@ def main():
         com1.enable()
         # A camada enlace possui uma camada inferior, TX possui um método para conhecermos o status da transmissão
         # Tente entender como esse método funciona e o que ele retorna
-
+        print("-------------------------")
+        print("Comunicação aberta!")
+        print("-------------------------")
         #Agora vamos iniciar a recepção dos dados. Se algo chegou ao RX, deve estar automaticamente guardado
         #Observe o que faz a rotina dentro do thread RX
         #print um aviso de que a recepção vai começar.
@@ -56,7 +56,7 @@ def main():
         while True:
             rxBuffer, nRx = com1.getData(1)
             if rxBuffer == b'\xee':
-                print("Leitura Encerrada!")
+                print("\nLeitura Encerrada!")
                 break
             elif rxBuffer == b'\xd0':
                 size+=1
@@ -65,14 +65,14 @@ def main():
             
 
         print("recebeu {}" .format(out))
-        print(f"tamanho: {size}")
+        print(f"\nTamanho recebido: {size}")
 
         print("------------")
-        print("Enviando dados de volta")
+        print("Enviando dados de volta para Client..")
+        print("------------")
         volta = size.to_bytes(1, byteorder='big')
         com1.sendData(np.asarray(volta))
         txSize = com1.tx.getStatus()
-  
             
         fim_recep = time.time()  #fim do recepção
         tempo_recep = fim_recep - inicio_recep
