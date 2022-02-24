@@ -55,14 +55,15 @@ def main():
         size=0
         while True:
             rxBuffer, nRx = com1.getData(1)
-            if rxBuffer == b'\xee':
+            if rxBuffer == b'\xc3':
                 print("\nLeitura Encerrada!")
                 break
             elif rxBuffer == b'\xd0':
+                out+=rxBuffer
                 size+=1
             else:
                 out+=rxBuffer
-            
+        out = "".join(out.split(b'\xd0'))
 
         print("recebeu {}" .format(out))
         print(f"\nTamanho recebido: {size}")

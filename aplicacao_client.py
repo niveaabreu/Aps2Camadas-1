@@ -38,9 +38,9 @@ def random_bytes():
     for byte in lista:
         out.append(byte)
         out.append(bytes([13*16]))  #Diferencia se é byte ou diferença
-    print(f"Enviando: \n {b''.join(lista)} do tipo {type(b''.join(out))}")
+    print(f"Enviando: \n {lista} do tipo {type(b''.join(out))}")
     #start = [0xAA.to_bytes(1, byteorder='big')]
-    final=[0xEE.to_bytes(1, byteorder='big')]
+    final=[bytes([13*15])]
     out = out+final
     l =b''.join(out) # Mensagem a ser enviada
     return l, x
