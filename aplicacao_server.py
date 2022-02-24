@@ -58,8 +58,11 @@ def main():
             if rxBuffer == b'\xee':
                 print("Leitura Encerrada!")
                 break
-            out+=rxBuffer
-            size+=nRx
+            elif rxBuffer == b'\xd0':
+                size+=1
+            else:
+                out+=rxBuffer
+            
 
         print("recebeu {}" .format(out))
         print(f"tamanho: {size}")

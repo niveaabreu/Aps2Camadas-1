@@ -37,13 +37,17 @@ def random_bytes():
     x = random.randint(10,30)
     random.shuffle(lista)
     lista=lista[:x]
-    size = len(b''.join(lista))
+    out = []
+    for byte in lista:
+        out.append(byte)
+        out.append(bytes([13*16]))
+
     #start = [0xAA.to_bytes(1, byteorder='big')]
     final=[0xEE.to_bytes(1, byteorder='big')]
     lista = lista+final
     l =b''.join(lista) # Mensagem a ser enviada
     
-    return l, size
+    return l, x
 
 
 def main():
