@@ -25,7 +25,7 @@ import random
 #use uma das 3 opcoes para atribuir à variável a porta usada
 #serialName = "/dev/tty"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM3"                  # Windows(variacao de)
+serialName = "COM5"                  # Windows(variacao de)
 
 
 def random_bytes():
@@ -37,8 +37,9 @@ def random_bytes():
     out = []
     for byte in lista:
         #out.append(len(byte).to_bytes(1, byteorder='big'))
-        out.append(byte)
         out.append(bytes([13*16]))  #Diferencia se é byte ou diferença
+        out.append(byte)
+        
     print(f"Enviando os seguintes dados: \n {lista}")
     final=[bytes([13*15])]
     out = out+final
