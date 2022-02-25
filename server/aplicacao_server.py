@@ -31,54 +31,66 @@ def main():
     try:
         #declaramos um objeto do tipo enlace com o nome "com". Essa é a camada inferior à aplicação. Observe que um parametro
         #para declarar esse objeto é o nome da porta.
+        caso = input("""Qual o caso deseja simular?
+        1 - Caso de Sucesso de Transmissão
+        2 - Caso de erro de transmissão
+        3 - Caso de timeout\n """)
         com1 = enlace(serialName)
         
         # Ativa comunicacao. Inicia os threads e a comunicação seiral 
         com1.enable()
-        # A camada enlace possui uma camada inferior, TX possui um método para conhecermos o status da transmissão
-        # Tente entender como esse método funciona e o que ele retorna
         print("-------------------------")
-        print("Comunicação aberta!")
+        print("Esperando o recebimento de dados...")
         print("-------------------------")
-        #Agora vamos iniciar a recepção dos dados. Se algo chegou ao RX, deve estar automaticamente guardado
-        #Observe o que faz a rotina dentro do thread RX
-        #print um aviso de que a recepção vai começar.
-        print("-------------------------")
-        print("Iniciando a recepção")
-        print("-------------------------")
-        #Será que todos os bytes enviados estão realmente guardadas? Será que conseguimos verificar?
-        #Veja o que faz a funcao do enlaceRX  getBufferLen
+
         inicio_recep = time.time()  #inicio do recepção
-        #acesso aos bytes recebidos
-        x = len([bytes([0,255]),bytes([0]),bytes([15]),bytes([16*15]),bytes([255,0]),bytes([255])]*5)
+
         out =b''
         size=0
         while True:
             rxBuffer, nRx = com1.getData(1)
             if rxBuffer == b'\xc3':
-                print("\nLeitura Encerrada!")
+                print("\n------------")
+                print("Leitura Encerrada!")
+                print("------------")
                 break
             elif rxBuffer == b'\xd0':
-                out+=rxBuffer
                 size+=1
             else:
                 out+=rxBuffer
-        out = "".join(out.split(b'\xd0'))
+            # rxBuffer, nRx = com1.getData(size_to_read)
+            # if rxBuffer[-1] == b'\xc3':
+            #     print("\n------------")
+            #     print("Leitura Encerrada!")
+            #     print("------------")
+            #     break
+            # size+=int.from_bytes(rxBuffer, 'big')
+            # size_to_read=int.from_bytes(rxBuffer, 'big') + 1
+            # out+=rxBuffer
+        #out = "".join(out.split(b'\xd0'))
 
+        print("\n------------")
         print("recebeu {}" .format(out))
-        print(f"\nTamanho recebido: {size}")
-
+        print(f"\nQuantidade de comandos recebidos: {size}")
         print("------------")
+
+        print("\n------------")
         print("Enviando dados de volta para Client..")
         print("------------")
         volta = size.to_bytes(1, byteorder='big')
-        com1.sendData(np.asarray(volta))
+        if int(caso)==1:
+            com1.sendData(np.asarray(volta))
+        elif int(caso)==2:
+            com1.sendData(np.asarray(int(3).to_bytes(1, byteorder='big')))
+        else:
+            print("\nCASO DE TIMEOUT")
+            time.sleep(10)
         txSize = com1.tx.getStatus()
             
         fim_recep = time.time()  #fim do recepção
         tempo_recep = fim_recep - inicio_recep
         # Encerra comunicação
-        print("-------------------------")
+        print("\n-------------------------")
         print("Comunicação encerrada")
         print("-------------------------")
 

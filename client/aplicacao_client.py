@@ -36,10 +36,10 @@ def random_bytes():
     lista=lista[:x]
     out = []
     for byte in lista:
+        #out.append(len(byte).to_bytes(1, byteorder='big'))
         out.append(byte)
         out.append(bytes([13*16]))  #Diferencia se é byte ou diferença
-    print(f"Enviando: \n {lista} do tipo {type(b''.join(out))}")
-    #start = [0xAA.to_bytes(1, byteorder='big')]
+    print(f"Enviando os seguintes dados: \n {lista}")
     final=[bytes([13*15])]
     out = out+final
     l =b''.join(out) # Mensagem a ser enviada
@@ -58,16 +58,14 @@ def main():
         print("Comunicação aberta!")
         print("-------------------------")
 
-        
-
         #faça aqui uma conferência do tamanho do seu txBuffer, ou seja, quantos bytes serão enviados.
         inicio_envio = time.time()  #inicio do envio
-        print("-------------------------")
+        print("\n-------------------------")
         print("Iniciando Transmissão de dados")
         print("-------------------------")
         bytes_to_send, size = random_bytes()
         
-        print(f"Tamanho enviado:{size}")
+        print(f"\nQuantidade de comandos enviado:{size}")
 
         #finalmente vamos transmitir os tados. Para isso usamos a funçao sendData que é um método da camada enlace.
         #faça um print para avisar que a transmissão vai começar.
@@ -83,29 +81,40 @@ def main():
         #Agora vamos iniciar a recepção dos dados. Se algo chegou ao RX, deve estar automaticamente guardado
         #Observe o que faz a rotina dentro do thread RX
         #print um aviso de que a recepção vai começar.
-        print("-------------------------")
-        print("Iniciando a recepção")
+        print("\n-------------------------")
+        print("Esperando retransmissão de dados...")
         print("-------------------------")
         #Será que todos os bytes enviados estão realmente guardadas? Será que conseguimos verificar?
         #Veja o que faz a funcao do enlaceRX  getBufferLen
         inicio_recep = time.time()  #inicio do recepção
         #acesso aos bytes recebidos
         rxBuffer, nRx = com1.getData(1)
+        if rxBuffer[0]==-1:
+            print("-------------------------")
+            print("TIME OUT")
+            print("TEMPO DE REQUISIÇÃO EXPIRADO")
+            print("-------------------------")
+            print("\n-------------------------")
+            print("Comunicação encerrada")
+            print("-------------------------\n")
+            com1.disable()
 
         if int.from_bytes(rxBuffer, 'big') == size:
-            print("Dados enviados adequadamente")
-        else:
-            print(f"Algum erro: \n Tamanho enviado:{size}\nRecebido:{int.from_bytes(rxBuffer, 'big')}")
-    
-        print("recebeu {}" .format(rxBuffer))
+            print("\n-------------------------")
+            print("DADOS RECEBIDOS CORRETAMENTE!")
+            print("-------------------------")
 
-            
+        else:
+            print("\n-------------------------")
+            print(f"ERRO DE RETRANSMISSÃO: \nTamanho enviado:{size}\nRecebido:{int.from_bytes(rxBuffer, 'big')}")
+            print("-------------------------")
+    
         fim_recep = time.time()  #fim do recepção
         tempo_recep = fim_recep - inicio_recep
         # Encerra comunicação
-        print("-------------------------")
+        print("\n-------------------------")
         print("Comunicação encerrada")
-        print("-------------------------")
+        print("-------------------------\n")
 
         print(f"Tempo decorrido durante envio: {tempo_envio:.2f} s")
         print(f"Tempo decorrido durante recepção: {tempo_recep:.2f} s")
