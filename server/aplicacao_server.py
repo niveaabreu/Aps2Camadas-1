@@ -47,6 +47,7 @@ def main():
 
         out =b''
         size=0
+
         while True:
             rxBuffer, nRx = com1.getData(1)
             if rxBuffer == b'\xc3':
@@ -54,9 +55,12 @@ def main():
                 print("Leitura Encerrada!")
                 print("------------")
                 break
-            elif rxBuffer == b'\xd0':
+            elif rxBuffer == b'\xd0' and int(caso)==1:
+                print(f"\nComando {size+1}:")
                 size+=1
             else:
+                if int(caso)==1:
+                    print(f"{rxBuffer}", end="")
                 out+=rxBuffer
             # rxBuffer, nRx = com1.getData(size_to_read)
             # if rxBuffer[-1] == b'\xc3':
@@ -68,11 +72,11 @@ def main():
             # size_to_read=int.from_bytes(rxBuffer, 'big') + 1
             # out+=rxBuffer
         #out = "".join(out.split(b'\xd0'))
-
-        print("\n------------")
-        print("recebeu {}" .format(out))
-        print(f"\nQuantidade de comandos recebidos: {size}")
-        print("------------")
+        if int(caso)==1:
+            print("\n------------")
+            print("recebeu {}" .format(out))
+            print(f"\nQuantidade de comandos recebidos: {size}")
+            print("------------")
 
         print("\n------------")
         print("Enviando dados de volta para Client..")
