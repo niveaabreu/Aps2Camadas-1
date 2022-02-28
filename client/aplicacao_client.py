@@ -23,10 +23,10 @@ import random
 # se estiver usando windows, o gerenciador de dispositivos informa a porta
 
 #use uma das 3 opcoes para atribuir à variável a porta usada
-#serialName = "/dev/tty"           # Ubuntu (variacao de)
+#serialName = "/dev/tty0"           # Ubuntu (variacao de)
 #serialName = "/dev/tty.usbmodem1411" # Mac    (variacao de)
-serialName = "COM5"                  # Windows(variacao de)
-
+serialName = "COM3"                  # Windows(variacao de)
+  
 
 def random_bytes():
     random.seed(time.time())
@@ -54,6 +54,9 @@ def main():
         com1 = enlace(serialName)
         # Ativa comunicacao. Inicia os threads e a comunicação seiral 
         com1.enable()
+        time.sleep(.2)
+        com1.sendData(b'00')
+        time.sleep(1) 
 
         print("-------------------------")
         print("Comunicação aberta!")
@@ -68,25 +71,18 @@ def main():
         
         print(f"\nQuantidade de comandos enviado:{size}")
 
-        #finalmente vamos transmitir os tados. Para isso usamos a funçao sendData que é um método da camada enlace.
-        #faça um print para avisar que a transmissão vai começar.
-        #tente entender como o método send funciona!
-        #Cuidado! Apenas trasmitimos arrays de bytes! Nao listas!
         com1.sendData(np.asarray(bytes_to_send))
+        time.sleep(.05)
        
-        # A camada enlace possui uma camada inferior, TX possui um método para conhecermos o status da transmissão
-        # Tente entender como esse método funciona e o que ele retorna
+       
         txSize = com1.tx.getStatus() # retorna o que foi escrito na transmissao, caso o buffer seja enviado, assume status 0, caso nao recebe a quantidade de bytes enviados no processo
         fim_envio = time.time()  #fim do envio
         tempo_envio = fim_envio - inicio_envio
-        #Agora vamos iniciar a recepção dos dados. Se algo chegou ao RX, deve estar automaticamente guardado
-        #Observe o que faz a rotina dentro do thread RX
-        #print um aviso de que a recepção vai começar.
+        
         print("\n-------------------------")
         print("Esperando retransmissão de dados...")
         print("-------------------------")
-        #Será que todos os bytes enviados estão realmente guardadas? Será que conseguimos verificar?
-        #Veja o que faz a funcao do enlaceRX  getBufferLen
+       
         inicio_recep = time.time()  #inicio do recepção
         #acesso aos bytes recebidos
         rxBuffer, nRx = com1.getData(1)
@@ -102,12 +98,12 @@ def main():
 
         if int.from_bytes(rxBuffer, 'big') == size:
             print("\n-------------------------")
-            print("DADOS RECEBIDOS CORRETAMENTE!")
+            print(f"DADOS RECEBIDOS CORRETAMENTE!\nTamanho enviado:{size}\nTamanho recebido:{int.from_bytes(rxBuffer, 'big')}")
             print("-------------------------")
 
         else:
             print("\n-------------------------")
-            print(f"ERRO DE RETRANSMISSÃO: \nTamanho enviado:{size}\nRecebido:{int.from_bytes(rxBuffer, 'big')}")
+            print(f"ERRO DE RETRANSMISSÃO: \nTamanho enviado:{size}\nTamanho recebido:{int.from_bytes(rxBuffer, 'big')}")
             print("-------------------------")
     
         fim_recep = time.time()  #fim do recepção

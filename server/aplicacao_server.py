@@ -39,6 +39,12 @@ def main():
         
         # Ativa comunicacao. Inicia os threads e a comunicação seiral 
         com1.enable()
+        print("esperando 1 byte de sacrifício")        
+        rxBuffer, nRx = com1.getData(1)
+        com1.rx.clearBuffer()
+        time.sleep(.1)
+        
+
         print("-------------------------")
         print("Esperando o recebimento de dados...")
         print("-------------------------")
@@ -84,11 +90,14 @@ def main():
         volta = size.to_bytes(1, byteorder='big')
         if int(caso)==1:
             com1.sendData(np.asarray(volta))
+            time.sleep(.05)
         elif int(caso)==2:
             com1.sendData(np.asarray(int(3).to_bytes(1, byteorder='big')))
+            time.sleep(.05)
         else:
             print("\nCASO DE TIMEOUT")
             time.sleep(10)
+
         txSize = com1.tx.getStatus()
             
         fim_recep = time.time()  #fim do recepção
