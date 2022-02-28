@@ -71,12 +71,11 @@ class RX(object):
         inicio = time.time()
         atual = time.time()
         while(self.getBufferLen() < size):
-            #print(f'Faltam {10-(atual-inicio)/2:.1f}s ...')
-            print(f"Faltam: {10-(time.time()-inicio):.1f}s")
+            print(f"TEMPO RESTANTE DE REQUISIÇÃO: {abs(10-(time.time()-inicio)):.1f}s",end=" \r")
             if (time.time()-inicio)>=10:
                 return [-1]
             atual+=time.time()
-            #time.sleep(0.05)          
+            time.sleep(0.01)          
         return(self.getBuffer(size))
 
 

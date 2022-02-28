@@ -87,7 +87,7 @@ def main():
         #acesso aos bytes recebidos
         rxBuffer, nRx = com1.getData(1)
         if rxBuffer[0]==-1:
-            print("-------------------------")
+            print("\n-------------------------")
             print("TIME OUT")
             print("TEMPO DE REQUISIÇÃO EXPIRADO")
             print("-------------------------")
