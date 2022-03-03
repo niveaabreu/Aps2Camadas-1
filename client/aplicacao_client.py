@@ -62,7 +62,7 @@ def main():
         print("Comunicação aberta!")
         print("-------------------------")
 
-        #faça aqui uma conferência do tamanho do seu txBuffer, ou seja, quantos bytes serão enviados.
+
         inicio_envio = time.time()  #inicio do envio
         print("\n-------------------------")
         print("Iniciando Transmissão de dados")
@@ -120,10 +120,12 @@ def main():
         print(f"Baudrate de referência: {com1.fisica.baudrate}")
 
         com1.disable()
-        
+
+    except KeyboardInterrupt:
+        print("Finalização forçada")
+        com1.disable()
     except Exception as erro:
         print("ops! :-\\")
-        print(erro)
         com1.disable()
         
 

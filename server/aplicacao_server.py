@@ -69,16 +69,7 @@ def main():
                 if int(caso)==1:
                     print(f"{rxBuffer}", end="")
                 out+=rxBuffer
-            # rxBuffer, nRx = com1.getData(size_to_read)
-            # if rxBuffer[-1] == b'\xc3':
-            #     print("\n------------")
-            #     print("Leitura Encerrada!")
-            #     print("------------")
-            #     break
-            # size+=int.from_bytes(rxBuffer, 'big')
-            # size_to_read=int.from_bytes(rxBuffer, 'big') + 1
-            # out+=rxBuffer
-        #out = "".join(out.split(b'\xd0'))
+
         if int(caso)==1:
             print("\n------------")
             print("recebeu {}" .format(out))
@@ -93,7 +84,8 @@ def main():
             com1.sendData(np.asarray(volta))
             time.sleep(.05)
         elif int(caso)==2:
-            com1.sendData(np.asarray(int(3).to_bytes(1, byteorder='big')))
+            saida = int(input("Digite qual valor deseja enviar(erradamente...): "))
+            com1.sendData(np.asarray(int(saida).to_bytes(1, byteorder='big')))
             time.sleep(.05)
         else:
             print("\nCASO DE TIMEOUT")
@@ -110,6 +102,10 @@ def main():
 
         com1.disable()
         
+    except KeyboardInterrupt:
+        print("Finalização forçada")
+        com1.disable()
+
     except Exception as erro:
         print("ops! :-\\")
         print(erro)
