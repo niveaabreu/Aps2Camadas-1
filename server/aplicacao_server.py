@@ -54,8 +54,8 @@ def main():
 
         out =b''
         size=0
-
-        while True:
+        condition = True
+        while condition:
             rxBuffer, nRx = com1.getData(1)
             if rxBuffer == b'\xc3':
                 print("\n------------")
